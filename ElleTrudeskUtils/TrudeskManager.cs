@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using ElleTrudeskUtils.Configuration;
@@ -21,7 +22,7 @@ namespace ElleTrudeskUtils
             HttpClient.BaseAddress = new Uri(Configuration.TrudeskUrl);
             HttpClient.DefaultRequestHeaders.Accept.Clear();
             HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "accesstoken", Configuration.TrudeskAccessToken);
+            HttpClient.DefaultRequestHeaders.TryAddWithoutValidation("accesstoken", Configuration.TrudeskAccessToken);
         }
 
         public async Task<TicketCreateResponse> CreateTicket(TicketRequest ticket)
@@ -35,22 +36,30 @@ namespace ElleTrudeskUtils
             return ret;
         }
 
-        public async Task<TicketCreateResponse> GetTicket(string id)
+        public async Task<TicketCommentResponse> InsertComment(TicketCommentRequest comment)
+        {
+            HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/v1/tickets/addcomment", comment);
+
+            TicketCommentResponse ret = JsonConvert.DeserializeObject<TicketCommentResponse>(response.Content.ReadAsStringAsync().Result);
+
+            return ret;
+
+        }
+
+        public async Task<TicketGetResponse> GetTicket(string id)
         {
             HttpResponseMessage response = await HttpClient.GetAsync("api/v1/tickets/" + id);
 
             response.EnsureSuccessStatusCode();
 
-            TicketCreateResponse ret = JsonConvert.DeserializeObject<TicketCreateResponse>(response.Content.ReadAsStringAsync().Result);
+            TicketGetResponse ret = JsonConvert.DeserializeObject<TicketGetResponse>(response.Content.ReadAsStringAsync().Result);
 
             return ret;
         }
 
         public async Task<TicketCreateResponse> UpdateTicket(string id, TicketRequest ticket)
         {
-            HttpContent content = new MultipartFormDataContent();
-
-            HttpResponseMessage response = await HttpClient.PutAsJsonAsync("api/v1/tickets/" + id, content);
+            HttpResponseMessage response = await HttpClient.PutAsJsonAsync("api/v1/tickets/" + id, ticket);
 
             response.EnsureSuccessStatusCode();
 
@@ -66,6 +75,28 @@ namespace ElleTrudeskUtils
             response.EnsureSuccessStatusCode();
 
             TicketDeleteResponse ret = JsonConvert.DeserializeObject<TicketDeleteResponse>(response.Content.ReadAsStringAsync().Result);
+
+            return ret;
+        }
+
+        public async Task<TicketSearchResponse> GetMyTickets(string username)
+        {
+            HttpResponseMessage response = await HttpClient.GetAsync("api/v1/tickets/search/?search=" + username);
+
+            response.EnsureSuccessStatusCode();
+
+            TicketSearchResponse ret = JsonConvert.DeserializeObject<TicketSearchResponse>(response.Content.ReadAsStringAsync().Result);
+
+            return ret;
+        }
+
+        public async Task<TicketSearchResponse> SearchTicket(TicketSearchFilter filtro)
+        {
+            HttpResponseMessage response = await HttpClient.GetAsync("api/v1/tickets/search/?search=" + filtro.it);
+
+            response.EnsureSuccessStatusCode();
+
+            TicketSearchResponse ret = JsonConvert.DeserializeObject<TicketSearchResponse>(response.Content.ReadAsStringAsync().Result);
 
             return ret;
         }

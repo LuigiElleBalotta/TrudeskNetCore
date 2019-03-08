@@ -4,10 +4,10 @@ using System.Text;
 
 namespace ElleTrudeskUtils.Entities
 {
-    public class TrudeskType
+    public class TicketCommentRequest
     {
+        public string comment { get; set; }
+        public string ownerId { get; set; }
         public string _id { get; set; }
-        public string name { get; set; }
-        public TrudeskPriority[] priorities { get; set; }
     }
 }

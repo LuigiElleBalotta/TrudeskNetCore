@@ -4,10 +4,11 @@ using System.Text;
 
 namespace ElleTrudeskUtils.Entities
 {
-    public class TicketCreateResponse
+    public class TicketSearchResponse
     {
         public bool success { get; set; }
         public string error { get; set; }
-        public TicketRequest ticket { get; set; }
+        public int count { get; set; }
+        public Ticket[] tickets { get; set; }
     }
 }

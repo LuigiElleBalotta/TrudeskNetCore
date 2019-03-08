@@ -8,9 +8,12 @@ namespace ElleTrudeskUtils.Entities
     {
         public string   subject { get; set; }
         public string   issue { get; set; }
-        public int      owner { get; set; }
-        public int      group { get; set; }
-        public int      type { get; set; }
-        public int      priority { get; set; }
+        public string   owner { get; set; }
+        public string   group { get; set; }
+        public string   type { get; set; }
+        public string   priority { get; set; }
+        public string   id { get; set; }
+        public int?     uid { get; set; }
+        public string[] tags { get; set; }
     }
 }

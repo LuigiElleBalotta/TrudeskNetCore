@@ -8,7 +8,6 @@ namespace ElleTrudeskUtils.Entities
     {
         public string _id { get; set; }
         public string name { get; set; }
-        public bool Public { get; set; }
         public string[] sendMailTo { get; set; }
         public string[] members { get; set; }
     }
