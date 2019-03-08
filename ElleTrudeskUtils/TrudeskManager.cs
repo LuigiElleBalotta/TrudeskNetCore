@@ -25,9 +25,9 @@ namespace ElleTrudeskUtils
             HttpClient.DefaultRequestHeaders.TryAddWithoutValidation("accesstoken", Configuration.TrudeskAccessToken);
         }
 
-        public async Task<TicketCreateResponse> CreateTicket(TicketRequest ticket)
+        public async Task<TicketCreateResponse> CreateTicket(TicketCreateRequest ticket)
         {
-            HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/v1/tickets/create", ticket);
+            HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/v1/tickets/create", (TicketCreateRequest)ticket);
 
             response.EnsureSuccessStatusCode();
 
@@ -57,7 +57,7 @@ namespace ElleTrudeskUtils
             return ret;
         }
 
-        public async Task<TicketCreateResponse> UpdateTicket(string id, TicketRequest ticket)
+        public async Task<TicketCreateResponse> UpdateTicket(string id, TicketUpdateRequest ticket)
         {
             HttpResponseMessage response = await HttpClient.PutAsJsonAsync("api/v1/tickets/" + id, ticket);
 
