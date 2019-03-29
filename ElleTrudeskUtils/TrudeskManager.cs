@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
@@ -23,6 +24,16 @@ namespace ElleTrudeskUtils
             HttpClient.DefaultRequestHeaders.Accept.Clear();
             HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpClient.DefaultRequestHeaders.TryAddWithoutValidation("accesstoken", Configuration.TrudeskAccessToken);
+        }
+
+        public TrudeskManager(string accesstoken)
+        {
+            Configuration = ConfigReader.GetConfig();
+            HttpClient = new HttpClient();
+            HttpClient.BaseAddress = new Uri(Configuration.TrudeskUrl);
+            HttpClient.DefaultRequestHeaders.Accept.Clear();
+            HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            HttpClient.DefaultRequestHeaders.TryAddWithoutValidation("accesstoken", accesstoken);
         }
 
         public async Task<TicketCreateResponse> CreateTicket(TicketCreateRequest ticket)
@@ -68,6 +79,13 @@ namespace ElleTrudeskUtils
             return ret;
         }
 
+        public async void UpdateTicketGroupStatus(string id, TicketUpdateGroupStatus ticket)
+        {
+            HttpResponseMessage response = await HttpClient.PutAsJsonAsync("api/v1/tickets/" + id, ticket);
+
+            response.EnsureSuccessStatusCode();
+        }
+
         public async Task<TicketDeleteResponse> DeleteTicket(string id)
         {
             HttpResponseMessage response = await HttpClient.DeleteAsync("api/v1/tickets/" + id);
@@ -79,9 +97,9 @@ namespace ElleTrudeskUtils
             return ret;
         }
 
-        public async Task<TicketSearchResponse> GetMyTickets(string username)
+        public async Task<TicketSearchResponse> GetTicketsByString(string stringa)
         {
-            HttpResponseMessage response = await HttpClient.GetAsync("api/v1/tickets/search/?search=" + username);
+            HttpResponseMessage response = await HttpClient.GetAsync("api/v1/tickets/search/?search=" + stringa);
 
             response.EnsureSuccessStatusCode();
 
@@ -99,6 +117,47 @@ namespace ElleTrudeskUtils
             TicketSearchResponse ret = JsonConvert.DeserializeObject<TicketSearchResponse>(response.Content.ReadAsStringAsync().Result);
 
             return ret;
+        }
+
+        public async Task<GetUserResponse> GetUser(string username)
+        {
+            HttpResponseMessage response = await HttpClient.GetAsync("api/v1/users/" + username);
+
+            response.EnsureSuccessStatusCode();
+
+            GetUserResponse ret = JsonConvert.DeserializeObject<GetUserResponse>(response.Content.ReadAsStringAsync().Result);
+
+            return ret;
+        }
+
+        public async Task<TicketSearchResponse> GetTicketsMyTickets()
+        {
+            HttpResponseMessage response = await HttpClient.GetAsync("api/v1/tickets");
+
+            response.EnsureSuccessStatusCode();
+
+            TicketSearchResponse ret = new TicketSearchResponse();
+            ret.success = true;
+            Ticket[] tickets = JsonConvert.DeserializeObject<Ticket[]>(response.Content.ReadAsStringAsync().Result);
+            ret.tickets = tickets;
+            ret.count = tickets.Length;
+
+            return ret;
+        }
+
+        public async Task<InsertUserResponse[]> InsertNewUser(UserInsertRequest[] users)
+        {
+            List<InsertUserResponse> responses = new List<InsertUserResponse>();
+            foreach (UserInsertRequest user in users)
+            {
+                HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/v1/users/create", user);
+
+                response.EnsureSuccessStatusCode();
+
+                InsertUserResponse ret = JsonConvert.DeserializeObject<InsertUserResponse>(response.Content.ReadAsStringAsync().Result);
+                responses.Add(ret);
+            }
+            return responses.ToArray();
         }
     }
 }
