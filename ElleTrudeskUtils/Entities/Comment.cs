@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ElleTrudeskUtils.Entities.UserApi;
 
 namespace ElleTrudeskUtils.Entities
 {
     public class Comment
     {
-        public Owner owner { get; set; }
+        public TrudeskUser owner { get; set; }
         public DateTime date { get; set; }
         public string comment { get; set; }
         public string _id { get; set; }

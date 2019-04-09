@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ElleTrudeskUtils.Entities
+﻿namespace ElleTrudeskUtils.Entities.TicketApi
 {
-    public class TicketRequest
+    public class TicketCreateRequest
     {
         public string   subject { get; set; }
         public string   issue { get; set; }
@@ -12,8 +8,6 @@ namespace ElleTrudeskUtils.Entities
         public string   group { get; set; }
         public string   type { get; set; }
         public string   priority { get; set; }
-        public string   id { get; set; }
-        public int?     uid { get; set; }
         public string[] tags { get; set; }
     }
 }

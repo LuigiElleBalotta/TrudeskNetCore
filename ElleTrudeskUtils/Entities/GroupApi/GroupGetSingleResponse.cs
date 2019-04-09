@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ElleTrudeskUtils.Entities
+namespace ElleTrudeskUtils.Entities.GroupApi
 {
-    public class TicketCommentResponse
+    public class GroupGetSingleResponse
     {
         public bool success { get; set; }
         public string error { get; set; }
-        //public Ticket ticket { get; set; }
-}
+        public GroupMemberObj group { get; set; }
+    }
 }

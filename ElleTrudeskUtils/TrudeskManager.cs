@@ -7,6 +7,9 @@ using ElleTrudeskUtils.Configuration;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using ElleTrudeskUtils.Entities;
+using ElleTrudeskUtils.Entities.GroupApi;
+using ElleTrudeskUtils.Entities.TicketApi;
+using ElleTrudeskUtils.Entities.UserApi;
 using Newtonsoft.Json;
 
 namespace ElleTrudeskUtils
@@ -158,6 +161,33 @@ namespace ElleTrudeskUtils
                 responses.Add(ret);
             }
             return responses.ToArray();
+        }
+
+        public async Task<GroupCreateResponse> CreateGroup(GroupCreateRequest request)
+        {
+            HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/v1/groups/create", request);
+
+            GroupCreateResponse ret = JsonConvert.DeserializeObject<GroupCreateResponse>(response.Content.ReadAsStringAsync().Result);
+
+            return ret;
+        }
+
+        public async Task<GroupGetSingleResponse> GetGroup(string idGroup)
+        {
+            HttpResponseMessage response = await HttpClient.GetAsync("api/v1/groups/" + idGroup);
+
+            GroupGetSingleResponse ret = JsonConvert.DeserializeObject<GroupGetSingleResponse>(response.Content.ReadAsStringAsync().Result);
+
+            return ret;
+        }
+
+        public async Task<GroupUpdateResponse> UpdateGroup(GroupUpdateRequest request, string idGroup)
+        {
+            HttpResponseMessage response = await HttpClient.PutAsJsonAsync("api/v1/groups/" + idGroup, request);
+
+            GroupUpdateResponse ret = JsonConvert.DeserializeObject<GroupUpdateResponse>(response.Content.ReadAsStringAsync().Result);
+
+            return ret;
         }
     }
 }

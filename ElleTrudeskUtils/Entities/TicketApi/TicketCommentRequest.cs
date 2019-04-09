@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ElleTrudeskUtils.Entities
+﻿namespace ElleTrudeskUtils.Entities.TicketApi
 {
     public class TicketCommentRequest
     {
